@@ -1,0 +1,346 @@
+{
+  "info": {
+    "_postman_id": "2fa6a08f-e6d2-42a1-af7e-26235844176e",
+    "name": "Tugas 2 RESTfull API-2428240078",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58487124",
+    "_collection_link": "https://go.postman.co/collection/58487124-2fa6a08f-e6d2-42a1-af7e-26235844176e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "A.CRUD",
+      "item": [
+        {
+          "name": "Semua Alumni",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 200', function () {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test('Response berupa array', function () {\r\n  const jsonData = pm.response.json();\r\n  pm.expect(jsonData).to.be.an('array');\r\n});\r\n\r\npm.test('Setiap data memiliki id dan nama', function () {\r\n  const jsonData = pm.response.json();\r\n  jsonData.forEach((item) => {\r\n    pm.expect(item).to.have.property('id');\r\n    pm.expect(item).to.have.property('nama');\r\n  });\r\n});\r\n\r\npm.test('Response time di bawah 500ms', function () {\r\n  pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\npm.test('Data mahasiswa pertama bernama Andi', function () {\r\n  const jsonData = pm.response.json();\r\n  pm.expect(jsonData[0].nama).to.eql('Farhan Akbar');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/alumni",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Tambah Alumni",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 201', function () {\r\n  pm.response.to.have.status(201);\r\n});\r\n\r\npm.test('Data baru memiliki id dan nama sesuai kiriman', function () {\r\n  const jsonData = pm.response.json();\r\n  pm.expect(jsonData).to.have.property('id');\r\n  pm.expect(jsonData.nama).to.eql('Axcel');\r\n});\r\n\r\nif (pm.response.code === 201) {\r\n  pm.environment.set('AlumniId', pm.response.json().id);\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n    \"nim\": \"2018110078\",\r\n    \"nama\": \"Axcel\",\r\n    \"prodi\": \"Informatika\",\r\n    \"tahunLulus\": 2022,\r\n    \"pekerjaan\": \"Web Development\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/alumni",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Satu Alumni",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 200', function () {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test('Data yang diambil adalah Axcel', function () {\r\n  const jsonData = pm.response.json();\r\n  pm.expect(jsonData.id).to.eql(Number(pm.environment.get('AlumniId')));\r\n  pm.expect(jsonData.nama).to.eql('Axcel');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/alumni/{{AlumniId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni",
+                "{{AlumniId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ubah Alumni",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 200', function () {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.test('prodi berubah, nama tetap', function () {\r\n  const jsonData = pm.response.json();\r\n  pm.expect(jsonData.prodi).to.eql('Teknik Komputer');\r\n  pm.expect(jsonData.nama).to.eql('Axcel');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"prodi\": \"Teknik Komputer\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/alumni/{{AlumniId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni",
+                "{{AlumniId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hapus Alumni",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 204', function () {\r\n  pm.response.to.have.status(204);\r\n});\r\n\r\npm.test('Response tidak memiliki isi', function () {\r\n  pm.expect(pm.response.text()).to.eql('');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/alumni/{{AlumniId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni",
+                "{{AlumniId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Skenario Gagal",
+      "item": [
+        {
+          "name": "GET ID Sudah Dihapus",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 404', function () {\r\n  pm.response.to.have.status(404);\r\n});\r\n\r\npm.test('Pesan error: Data tidak ditemukan', function () {\r\n  pm.expect(pm.response.json().message).to.eql('Data tidak ditemukan');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/alumni/{{AlumniId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni",
+                "{{AlumniId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Tanpa API Key",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 401', function () {\r\n  pm.response.to.have.status(401);\r\n});\r\n\r\npm.test('Pesan error: API key tidak valid', function () {\r\n  pm.expect(pm.response.json().message).to.eql('API key tidak valid');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/alumni",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Data Tidak Lengkap",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 400', function () {\r\n  pm.response.to.have.status(400);\r\n});\r\n\r\npm.test('Pesan error menyebut field wajib', function () {\r\n  pm.expect(pm.response.json().message).to.include('wajib diisi');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"nama\": \"Hanya Nama\" }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/alumni",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST JSON Rusak",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code adalah 400', function () {\r\n  pm.response.to.have.status(400);\r\n});\r\n\r\npm.test('Respons tetap berupa JSON, bukan HTML', function () {\r\n  pm.response.to.be.json;\r\n  pm.expect(pm.response.json().message).to.eql('Format JSON tidak valid');\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nama\": \"Rusak\",}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/alumni",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alumni"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
