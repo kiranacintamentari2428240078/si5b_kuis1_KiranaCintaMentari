@@ -1,58 +1,18 @@
-let alumni = [
-  {
-    id: 1,
-    nim: "2020110045",
-    nama: "Farhan Akbar",
-    prodi: "Sistem Informasi",
-    tahunLulus: 2024,
-    pekerjaan: "Business Analyst"
-  },
-  {
-    id: 2,
-    nim: "2019110012",
-    nama: "Siti Rahma",
-    prodi: "Teknik Informatika",
-    tahunLulus: 2023,
-    pekerjaan: "Web Developer"
-  },
-  {
-    id: 3,
-    nim: "2020110078",
-    nama: "Dimas Prakoso",
-    prodi: "Sistem Informasi",
-    tahunLulus: 2024,
-    pekerjaan: "Data Analyst"
-  },
-];
-let nextId = 4;
+  const mongoose = require('mongoose');
 
-function getAll(tahunLulus) {
-  if (tahunLulus) return alumni.filter((m) => m.tahunLulus === Number(tahunLulus));
-  return alumni;
-}
+  const alamatSchema = new mongoose.Schema({
+  jalan: String,
+  kota: String,
+}, { _id: false });
 
-function getById(id) {
-  return alumni.find((m) => m.id === id);
-}
+  const alumniSchema = new mongoose.Schema({
+    nim: { type: String, required: [true, 'nim wajib diisi'], unique: true, trim: true },
+    nama: { type: String, required: [true, 'nama wajib diisi'], trim: true },
+    alamat: alamatSchema,
+    prodiId: { type: mongoose.Schema.Types.ObjectId, ref: 'Prodi' },
+    tahunLulus: { type: Number, required: [true, 'tahun lulus wajib diisi'], true: true},
+    pekerjaan: { type: String, required: [true, 'pekerjaan wajib diisi'], trim:true},
+    createdAt: { type: Date, default: Date.now },
+  });
 
-function create(data) {
-  const baru = { id: nextId++, ...data };
-  alumni.push(baru);
-  return baru;
-}
-
-function update(id, data) {
-  const index = alumni.findIndex((m) => m.id === id);
-  if (index === -1) return null;
-  alumni[index] = { ...alumni[index], ...data, id };
-  return alumni[index];
-}
-
-function remove(id) {
-  const index = alumni.findIndex((m) => m.id === id);
-  if (index === -1) return false;
-  alumni.splice(index, 1);
-  return true;
-}
-
-module.exports = { getAll, getById, create, update, remove };
+  module.exports = mongoose.model('Alumni', alumniSchema);

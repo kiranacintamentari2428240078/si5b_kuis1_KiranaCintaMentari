@@ -1,12 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const alumniController = require('../controllers/alumniController');
-const cekApiKey = require('../middlewares/cekAPIKey');
+const c = require('../controllers/alumniController');
+const cekApiKey = require('../middlewares/cekApiKey');
 
-router.get('/', alumniController.getAll);
-router.get('/:id', alumniController.getById);
-router.post('/', cekApiKey, alumniController.create);
-router.put('/:id', cekApiKey, alumniController.update);
-router.delete('/:id', cekApiKey, alumniController.remove);
+router.get('/', c.getAll);
+router.get('/:id', c.getById);
+router.post('/', cekApiKey, c.create);
 
 module.exports = router;
